@@ -1,45 +1,58 @@
-// filepath: /Users/user/Documents/GitHub/WeSave/frontend/app/screens/LoginScreen.js
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, Text, Alert } from 'react-native';
-import tw from 'twrnc';
-import axios from 'axios';
-import { AuthContext } from '../context/AuthContext';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import tw from 'tailwind-react-native-classnames';
+import { AuthContext } from '../../context/AuthContext';
 
-export default function LoginScreen({ navigation }) {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { setUser } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await axios.post('http://localhost:5000/api/auth/login', { email, password });
-  //     setUser(response.data.user);
-  //     navigation.navigate('Groups');
-  //   } catch (error) {
-  //     Alert.alert('Error', error.response?.data?.error || 'Login failed');
-  //   }
-  // };
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill all fields');
+      return;
+    }
+
+    const result = await login(email, password);
+    if (!result.success) {
+      Alert.alert('Error', result.message);
+    }
+  };
 
   return (
-    <View style={tw`flex-1 p-4 bg-gray-100`}>
-      <Text style={tw`text-2xl font-bold mb-4`}>Login</Text>
+    <View style={tw`flex-1 justify-center p-6 bg-white`}>
+      <Text style={tw`text-3xl font-bold text-center mb-8 text-blue-600`}>Savings App</Text>
+      
       <TextInput
-        style={tw`border border-gray-300 p-2 mb-4 rounded`}
+        style={tw`border border-gray-300 rounded-lg p-4 mb-4`}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
+      
       <TextInput
-        style={tw`border border-gray-300 p-2 mb-4 rounded`}
+        style={tw`border border-gray-300 rounded-lg p-4 mb-6`}
         placeholder="Password"
-        secureTextEntry
         value={password}
         onChangeText={setPassword}
+        secureTextEntry
       />
-      <Button title="Login"/>
-      <Text style={tw`mt-4 text-blue-500`} onPress={() => navigation.navigate('Signup')}>
-        Don't have an account? Sign up
-      </Text>
+      
+      <TouchableOpacity
+        style={tw`bg-blue-600 py-4 rounded-lg mb-4`}
+        onPress={handleLogin}
+      >
+        <Text style={tw`text-white text-center font-bold`}>Login</Text>
+      </TouchableOpacity>
+      
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={tw`text-center text-blue-600`}>Don't have an account? Register</Text>
+      </TouchableOpacity>
     </View>
   );
-}
+};
+
+export default LoginScreen;
