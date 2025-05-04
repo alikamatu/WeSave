@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middlewares/auth');
+// const auth = require('../middlewares/auth');
 const Transaction = require('../models/Transaction');
 const SavingsPlan = require('../models/SavingsPlan');
 const Group = require('../models/Group');
 const momoService = require('../services/momoService');
 
 // Initiate payment
-router.post('/initiate', auth, async (req, res) => {
+router.post('/initiate', async (req, res) => {
     try {
         const { planId, amount, phoneNumber, paymentMethod } = req.body;
         
@@ -58,7 +58,7 @@ router.post('/initiate', auth, async (req, res) => {
 });
 
 // Check payment status
-router.get('/status/:referenceId', auth, async (req, res) => {
+router.get('/status/:referenceId', async (req, res) => {
     try {
         const { referenceId } = req.params;
         
@@ -97,7 +97,7 @@ router.get('/status/:referenceId', auth, async (req, res) => {
 });
 
 // Get all transactions for user
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const transactions = await Transaction.find({ userId: req.user.id })
             .sort({ createdAt: -1 });

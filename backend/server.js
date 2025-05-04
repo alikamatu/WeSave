@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const savingsRoutes = require('./routes/savings');
-const groupRoutes = require('./routes/group');
+// const groupRoutes = require('./routes/group');
 const transactionRoutes = require('./routes/transaction');
 // const chatRoutes = require('./routes/chat');
 
