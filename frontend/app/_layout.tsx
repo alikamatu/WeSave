@@ -1,24 +1,20 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import LoginScreen from "./screens/LoginScreen";
-import SignupScreen from "./screens/SignupScreen";
-import HelloScreen from "./HelloScreen";
-import { AuthProvider } from "./context/AuthContext";
-import { NotificationProvider } from "./context/NotificationContext";
+// filepath: /Users/user/Documents/GitHub/WeSave/frontend/app/_layout.tsx
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import LoginScreen from './screens/LoginScreen';
+import { AuthProvider } from './context/AuthContext';
 
 const Stack = createStackNavigator();
 
-export default function AppNavigator() {
+export default function App() {
   return (
     <AuthProvider>
-      <NotificationProvider>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="HelloScreen" component={HelloScreen} />
-      </Stack.Navigator>
-      </NotificationProvider>
-      </AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          <Stack.Screen name="Login" component={LoginScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }
-
