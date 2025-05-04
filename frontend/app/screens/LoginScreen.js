@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import tw from 'tailwind-react-native-classnames';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, FlatList } from 'react-native';
 import tw from 'tailwind-react-native-classnames';
-import { AuthContext } from '../../context/AuthContext';
-import api from '../../services/api';
+import { AuthContext } from '../context/AuthContext';
+import api from '../services/api';
 import SavingsPlanCard from '../../components/SavingsPlanCard';
-import GroupCard from '../../components/GroupCard';
+// import GroupCard from '../../components/GroupCard';
 
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -79,7 +79,7 @@ const DashboardScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         
-        {groups.length === 0 ? (
+        {/* {groups.length === 0 ? (
           <Text style={tw`text-gray-500`}>No groups yet</Text>
         ) : (
           <FlatList
@@ -95,7 +95,7 @@ const DashboardScreen = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={tw`py-2`}
           />
-        )}
+        )} */}
       </View>
     </ScrollView>
   );
