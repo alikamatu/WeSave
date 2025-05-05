@@ -18,6 +18,7 @@ const LoginScreen = ({ navigation }) => {
     }
   
     const result = await login(email, password);
+    navigation.navigate('Dashboard');
     if (!result.success) {
       Alert.alert('Error', result.message);
     }
