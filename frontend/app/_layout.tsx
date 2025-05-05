@@ -1,22 +1,39 @@
-// filepath: /Users/user/Documents/GitHub/WeSave/frontend/app/_layout.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen'
+import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import CreateSavingsPlan from './screens/CreateSavingsPlan';
 import { AuthProvider } from './context/AuthContext';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(storedUserId);
+      } catch (error) {
+        console.error('Error fetching userId from AsyncStorage:', error);
+      }
+    };
+
+    fetchUserId();
+  }, []);
+
   return (
     <AuthProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName={userId ? 'Dashboard' : 'Login'}>
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
+          <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlan} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

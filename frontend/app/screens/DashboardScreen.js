@@ -16,8 +16,8 @@ const DashboardScreen = ({ navigation }) => {
     const fetchData = async () => {
       try {
         const [savingsResponse, groupsResponse] = await Promise.all([
-          api.get('/api/savings'),
-          api.get('/api/groups')
+          api.get('/savings'),
+          api.get('/groups')
         ]);
         
         setSavingsPlans(savingsResponse.data);

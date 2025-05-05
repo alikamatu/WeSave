@@ -6,8 +6,8 @@ const { savingsPlanValidation } = require('../utils/validation');
 // Create a new savings plan
 router.post('/', async (req, res) => {
     // Validate data
-    const { error } = savingsPlanValidation(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+    // const { error } = savingsPlanValidation(req.body);
+    // if (error) return res.status(400).json({ message: error.details[0].message });
 
     // Create savings plan
     const savingsPlan = new SavingsPlan({
