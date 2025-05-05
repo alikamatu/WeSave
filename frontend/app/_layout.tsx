@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import SavingsPlanDetail from './screens/SavingsPlanDetail';
 import CreateSavingsPlan from './screens/CreateSavingsPlan';
 import { AuthProvider } from './context/AuthContext';
 
@@ -34,6 +35,7 @@ export default function App() {
           <Stack.Screen name="Register" component={RegisterScreen} />
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlan} />
+          <Stack.Screen name="SavingsPlanDetail" component={SavingsPlanDetail} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

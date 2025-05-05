@@ -13,24 +13,27 @@ const DashboardScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSavingsPlans = async () => {
       try {
-        const [savingsResponse, groupsResponse] = await Promise.all([
-          api.get('/savings'),
-          api.get('/groups')
-        ]);
-        
-        setSavingsPlans(savingsResponse.data);
-        setGroups(groupsResponse.data);
+        const response = await api.get('/savings'); // Fetch savings plans from the backend
+        setSavingsPlans(response.data); // Set the fetched data to the state
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching savings plans:', error.response?.data || error.message);
       } finally {
-        setLoading(false);
+        setLoading(false); // Stop the loading spinner
       }
     };
 
-    fetchData();
+    fetchSavingsPlans();
   }, []);
+
+  if (loading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center`}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   if (loading) {
     return (
@@ -56,7 +59,7 @@ const DashboardScreen = ({ navigation }) => {
           <Text style={tw`text-gray-500`}>No savings plans yet</Text>
         ) : (
           <FlatList
-            horizontal
+            vertical
             data={savingsPlans}
             keyExtractor={(item) => item._id}
             renderItem={({ item }) => (
@@ -75,7 +78,7 @@ const DashboardScreen = ({ navigation }) => {
         <View style={tw`flex-row justify-between items-center mb-2`}>
           <Text style={tw`text-lg font-semibold`}>Your Groups</Text>
           <TouchableOpacity onPress={() => navigation.navigate('CreateGroup')}>
-            <Text style={tw`text-blue-600`}>+ New</Text>
+            <Text style={tw`text-blue-600`} onPress={() => navigation.navigate('SavingsPlanDetail', { planId: item._id })}>+ New</Text>
           </TouchableOpacity>
         </View>
         
