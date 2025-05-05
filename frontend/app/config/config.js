@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://localhost:5000/api'; // Replace with your backend's base URL
+export const BASE_URL = 'http://192.168.194.254:1000/api'; // Replace with your backend's base URL

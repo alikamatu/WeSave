@@ -48,7 +48,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={tw`text-white text-center font-bold`}>Login</Text>
       </TouchableOpacity>
       
-      <TouchableOpacity onPress={() => navigation.navigate('Dashboard')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={tw`text-center text-blue-600`}>Don't have an account? Register</Text>
       </TouchableOpacity>
     </View>
