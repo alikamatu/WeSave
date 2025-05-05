@@ -27,6 +27,26 @@ const DashboardScreen = ({ navigation }) => {
     fetchSavingsPlans();
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch savings plans
+        const savingsResponse = await api.get('/savings');
+        setSavingsPlans(savingsResponse.data);
+
+        // Fetch groups
+        const groupsResponse = await api.get('/groups');
+        setGroups(groupsResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error.response?.data || error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   if (loading) {
     return (
       <View style={tw`flex-1 justify-center items-center`}>
@@ -73,16 +93,17 @@ const DashboardScreen = ({ navigation }) => {
           />
         )}
       </View>
-      
-      <View style={tw`mb-6`}>
+        
+ {/* Groups Section */}
+ <View style={tw`mb-6`}>
         <View style={tw`flex-row justify-between items-center mb-2`}>
           <Text style={tw`text-lg font-semibold`}>Your Groups</Text>
           <TouchableOpacity onPress={() => navigation.navigate('CreateGroup')}>
-            <Text style={tw`text-blue-600`} onPress={() => navigation.navigate('SavingsPlanDetail', { planId: item._id })}>+ New</Text>
+            <Text style={tw`text-blue-600`}>+ New</Text>
           </TouchableOpacity>
         </View>
         
-        {/* {groups.length === 0 ? (
+        {groups.length === 0 ? (
           <Text style={tw`text-gray-500`}>No groups yet</Text>
         ) : (
           <FlatList
@@ -98,7 +119,7 @@ const DashboardScreen = ({ navigation }) => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={tw`py-2`}
           />
-        )} */}
+        )}
       </View>
     </ScrollView>
   );
