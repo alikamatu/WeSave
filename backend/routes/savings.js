@@ -1,32 +1,31 @@
 const express = require('express');
 const router = express.Router();
 const SavingsPlan = require('../models/SavingsPlan');
-const { savingsPlanValidation } = require('../utils/validation');
 
-// Create a new savings plan
 router.post('/', async (req, res) => {
-    // Validate data
-    // const { error } = savingsPlanValidation(req.body);
-    // if (error) return res.status(400).json({ message: error.details[0].message });
+  const { userId, name, targetAmount, frequency, contributionAmount, withdrawalLimit, startDate, endDate } = req.body;
 
-    // Create savings plan
-    const savingsPlan = new SavingsPlan({
-        userId: req.user.id,
-        name: req.body.name,
-        targetAmount: req.body.targetAmount,
-        frequency: req.body.frequency,
-        contributionAmount: req.body.contributionAmount,
-        withdrawalLimit: req.body.withdrawalLimit,
-        startDate: req.body.startDate,
-        endDate: req.body.endDate
-    });
+  if (!userId || !name || !targetAmount || !frequency || !contributionAmount || !withdrawalLimit || !startDate || !endDate) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
 
-    try {
-        const savedPlan = await savingsPlan.save();
-        res.json(savedPlan);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
+  const savingsPlan = new SavingsPlan({
+    userId,
+    name,
+    targetAmount,
+    frequency,
+    contributionAmount,
+    withdrawalLimit,
+    startDate,
+    endDate,
+  });
+
+  try {
+    const savedPlan = await savingsPlan.save();
+    res.json(savedPlan);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 });
 
 // Get all savings plans for user

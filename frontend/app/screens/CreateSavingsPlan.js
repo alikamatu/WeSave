@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'tailwind-react-native-classnames';
 import api from '../services/api'; // Import your Axios instance
 
@@ -11,31 +12,55 @@ const CreateSavingsPlan = ({ navigation }) => {
   const [withdrawalLimit, setWithdrawalLimit] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [userId, setUserId] = useState(null);
 
-  const handleCreatePlan = async () => {
-    if (!name || !targetAmount || !frequency || !contributionAmount || !withdrawalLimit || !startDate || !endDate) {
-      Alert.alert('Error', 'Please fill all fields');
-      return;
-    }
-
+  // Fetch userId from AsyncStorage
+useEffect(() => {
+  const fetchUserId = async () => {
     try {
-      const response = await api.post('/savings', {
-        name,
-        targetAmount,
-        frequency,
-        contributionAmount,
-        withdrawalLimit,
-        startDate,
-        endDate,
-      });
-
-      Alert.alert('Success', 'Savings plan created successfully');
-      navigation.goBack();
+      const storedUserId = await AsyncStorage.getItem('UserId');
+      console.log('Retrieved userId:', storedUserId); // Log the userId
+      setUserId(storedUserId);
     } catch (error) {
-      console.error('Error creating savings plan:', error.response?.data || error.message);
-      Alert.alert('Error', error.response?.data?.message || 'Failed to create savings plan');
+      console.error('Error fetching userId from AsyncStorage:', error);
     }
   };
+
+  fetchUserId();
+}, []);
+
+const handleCreatePlan = async () => {
+  if (!name || !targetAmount || !frequency || !contributionAmount || !withdrawalLimit || !startDate || !endDate) {
+    Alert.alert('Error', 'Please fill all fields');
+    return;
+  }
+
+  if (!userId) {
+    Alert.alert('Error', 'User ID not found. Please log in again.');
+    return;
+  }
+
+  console.log('Sending userId:', userId); // Log the userId
+
+  try {
+    const response = await api.post('/savings', {
+      userId,
+      name,
+      targetAmount,
+      frequency,
+      contributionAmount,
+      withdrawalLimit,
+      startDate,
+      endDate,
+    });
+
+    Alert.alert('Success', 'Savings plan created successfully');
+    navigation.goBack();
+  } catch (error) {
+    console.error('Error creating savings plan:', error.response?.data || error.message);
+    Alert.alert('Error', error.response?.data?.message || 'Failed to create savings plan');
+  }
+};
 
   return (
     <View style={tw`flex-1 p-6 bg-white`}>

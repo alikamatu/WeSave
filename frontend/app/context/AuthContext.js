@@ -33,10 +33,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/auth/login', { email, password });
       await AsyncStorage.setItem('token', response.data.token);
-      await AsyncStorage.setItem('userId', response.data.id);
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data.user);
-      console.log('User:', response.data.user);
+      await AsyncStorage.setItem('UserId', response.data.user.id);
+      console.log('User:', response.data.user.id);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Login failed' };
