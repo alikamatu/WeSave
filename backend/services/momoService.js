@@ -12,8 +12,8 @@ router.post('/mtn-momo', async (req, res) => {
   try {
     // Replace with your MTN MoMo API credentials and endpoint
     const momoApiUrl = 'https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay';
-    const apiKey = 'YOUR_MTN_MOMO_API_KEY';
-    const subscriptionKey = 'YOUR_MTN_MOMO_SUBSCRIPTION_KEY';
+    const apiKey = 'eb3f6daa84174e818ff56db23c4539dd';
+    const subscriptionKey = '58b738e3442c47a79785a24f4d2fc1f1';
 
     const response = await axios.post(
       momoApiUrl,

@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const savingsRoutes = require('./routes/savings');
-// const groupRoutes = require('./routes/group');
+const groupRoutes = require('./routes/group');
 const transactionRoutes = require('./routes/transaction');
 // const chatRoutes = require('./routes/chat');
 
@@ -25,7 +25,7 @@ mongoose.connect(process.env.MONGODB_URI)
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/savings', savingsRoutes);
-// app.use('/api/groups', groupRoutes);
+app.use('/api/groups', groupRoutes);
 app.use('/api/transactions', transactionRoutes);
 // app.use('/api/chat', chatRoutes);
 
