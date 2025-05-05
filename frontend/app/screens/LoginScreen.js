@@ -9,11 +9,14 @@ const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
 
   const handleLogin = async () => {
+    console.log('Email:', email);
+    console.log('Password:', password);
+  
     if (!email || !password) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
-
+  
     const result = await login(email, password);
     if (!result.success) {
       Alert.alert('Error', result.message);

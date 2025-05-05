@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem('token', response.data.token);
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data.user);
-      setIsAuthenticated(true);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Login failed' };

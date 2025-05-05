@@ -53,33 +53,38 @@ router.post('/register', async (req, res) => {
 
 // Login
 router.post('/login', async (req, res) => {
-    // Validate data
-    const { error } = loginValidation(req.body);
-    if (error) return res.status(400).json({ message: error.details[0].message });
+  const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status(400).json({ message: 'Email not found' });
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required' });
+  }
 
-    // Check password
-    const validPass = await bcrypt.compare(req.body.password, user.password);
-    if (!validPass) return res.status(400).json({ message: 'Invalid password' });
+  // Check if user exists
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid email or password' });
+  }
 
-    // Create token
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '30d'
-    });
+  // Validate password
+  const isValidPassword = await bcrypt.compare(password, user.password);
+  if (!isValidPassword) {
+    return res.status(400).json({ message: 'Invalid email or password' });
+  }
 
-    res.header('Authorization', token).json({
-        token,
-        user: {
-            id: user._id,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-            phone: user.phone
-        }
-    });
+  // Generate token
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  });
+
+  res.json({
+    token,
+    user: {
+      id: user._id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    },
+  });
 });
 
 // Get current user
