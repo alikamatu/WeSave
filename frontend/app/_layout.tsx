@@ -6,6 +6,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import SavingsPlanDetail from './screens/SavingsPlanDetail';
+import CreateGroup from './screens/CreateGroup';
 import CreateSavingsPlan from './screens/CreateSavingsPlan';
 import { AuthProvider } from './context/AuthContext';
 
@@ -36,6 +37,7 @@ export default function App() {
           <Stack.Screen name="Dashboard" component={DashboardScreen} />
           <Stack.Screen name="CreateSavingsPlan" component={CreateSavingsPlan} />
           <Stack.Screen name="SavingsPlanDetail" component={SavingsPlanDetail} />
+          <Stack.Screen name="CreateGroup" component={CreateGroup} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

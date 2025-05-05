@@ -4,7 +4,17 @@ const Group = require('../models/Group');
 
 // Create a new group
 router.post('/', async (req, res) => {
-  const { name, description, admin, members, targetAmount, contributionAmount, frequency, startDate, endDate } = req.body;
+  const {
+    name,
+    description,
+    admin,
+    members,
+    targetAmount,
+    contributionAmount,
+    frequency,
+    startDate,
+    endDate,
+  } = req.body;
 
   if (!name || !admin || !targetAmount || !contributionAmount || !frequency || !startDate || !endDate) {
     return res.status(400).json({ message: 'All required fields must be provided.' });
@@ -33,7 +43,11 @@ router.post('/', async (req, res) => {
 // Get all groups
 router.get('/', async (req, res) => {
   try {
-    const groups = await Group.find().populate('admin members transactions chatMessages');
+    const groups = await Group.find()
+      .populate('admin', 'firstName lastName email') // Populate admin details
+      .populate('members', 'firstName lastName email') // Populate member details
+      .populate('transactions') // Populate transactions
+      .populate('chatMessages'); // Populate chat messages
     res.json(groups);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -43,8 +57,14 @@ router.get('/', async (req, res) => {
 // Get a single group by ID
 router.get('/:id', async (req, res) => {
   try {
-    const group = await Group.findById(req.params.id).populate('admin members transactions chatMessages');
+    const group = await Group.findById(req.params.id)
+      .populate('admin', 'firstName lastName email') // Populate admin details
+      .populate('members', 'firstName lastName email') // Populate member details
+      .populate('transactions') // Populate transactions
+      .populate('chatMessages'); // Populate chat messages
+
     if (!group) return res.status(404).json({ message: 'Group not found' });
+
     res.json(group);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -54,8 +74,14 @@ router.get('/:id', async (req, res) => {
 // Update a group
 router.put('/:id', async (req, res) => {
   try {
-    const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updatedGroup = await Group.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .populate('admin', 'firstName lastName email') // Populate admin details
+      .populate('members', 'firstName lastName email') // Populate member details
+      .populate('transactions') // Populate transactions
+      .populate('chatMessages'); // Populate chat messages
+
     if (!updatedGroup) return res.status(404).json({ message: 'Group not found' });
+
     res.json(updatedGroup);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -66,7 +92,9 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const deletedGroup = await Group.findByIdAndDelete(req.params.id);
+
     if (!deletedGroup) return res.status(404).json({ message: 'Group not found' });
+
     res.json({ message: 'Group deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -104,6 +132,26 @@ router.delete('/:id/members/:memberId', async (req, res) => {
     if (!group) return res.status(404).json({ message: 'Group not found' });
 
     group.members = group.members.filter((member) => member.toString() !== req.params.memberId);
+    await group.save();
+    res.json(group);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Add a transaction to a group
+router.post('/:id/transactions', async (req, res) => {
+  const { transactionId } = req.body;
+
+  if (!transactionId) {
+    return res.status(400).json({ message: 'Transaction ID is required.' });
+  }
+
+  try {
+    const group = await Group.findById(req.params.id);
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    group.transactions.push(transactionId);
     await group.save();
     res.json(group);
   } catch (err) {
