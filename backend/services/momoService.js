@@ -1,89 +1,48 @@
-const axios = require('axios');
-const crypto = require('crypto');
+const express = require('express');
+const router = express.Router();
+const axios = require('axios'); // Use Axios for making requests to MTN MoMo API
 
-// Configuration
-const MOMO_API_KEY = process.env.MOMO_API_KEY;
-const MOMO_USER_ID = process.env.MOMO_USER_ID;
-const MOMO_PRIMARY_KEY = process.env.MOMO_PRIMARY_KEY;
-const MOMO_CALLBACK_URL = process.env.MOMO_CALLBACK_URL;
-const MOMO_ENVIRONMENT = process.env.MOMO_ENVIRONMENT || 'sandbox';
+router.post('/mtn-momo', async (req, res) => {
+  const { planId, amount, phoneNumber } = req.body;
 
-const baseUrl = MOMO_ENVIRONMENT === 'production' 
-    ? 'https://api.mtn.com/v1' 
-    : 'https://sandbox.momodeveloper.mtn.com';
+  if (!planId || !amount || !phoneNumber) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
-// Generate access token
-const getAccessToken = async () => {
-    try {
-        const credentials = Buffer.from(`${MOMO_USER_ID}:${MOMO_API_KEY}`).toString('base64');
-        
-        const response = await axios.post(`${baseUrl}/collection/token/`, {}, {
-            headers: {
-                'Authorization': `Basic ${credentials}`,
-                'Ocp-Apim-Subscription-Key': MOMO_PRIMARY_KEY
-            }
-        });
-        
-        return response.data.access_token;
-    } catch (error) {
-        console.error('Error getting Momo access token:', error.response?.data || error.message);
-        throw error;
-    }
-};
+  try {
+    // Replace with your MTN MoMo API credentials and endpoint
+    const momoApiUrl = 'https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay';
+    const apiKey = 'YOUR_MTN_MOMO_API_KEY';
+    const subscriptionKey = 'YOUR_MTN_MOMO_SUBSCRIPTION_KEY';
 
-// Request payment from user
-const requestPayment = async (amount, phoneNumber, externalId, paymentReason = 'Savings contribution') => {
-    try {
-        const token = await getAccessToken();
-        
-        const response = await axios.post(`${baseUrl}/collection/v1_0/requesttopay`, {
-            amount: amount,
-            currency: 'EUR',
-            externalId: externalId,
-            payer: {
-                partyIdType: 'MSISDN',
-                partyId: phoneNumber
-            },
-            payerMessage: paymentReason,
-            payeeNote: paymentReason
-        }, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-Reference-Id': externalId,
-                'X-Target-Environment': MOMO_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
-                'Ocp-Apim-Subscription-Key': MOMO_PRIMARY_KEY,
-                'Content-Type': 'application/json'
-            }
-        });
-        
-        return response.data;
-    } catch (error) {
-        console.error('Error requesting Momo payment:', error.response?.data || error.message);
-        throw error;
-    }
-};
+    const response = await axios.post(
+      momoApiUrl,
+      {
+        amount,
+        currency: 'UGX', // Replace with your currency
+        externalId: planId,
+        payer: {
+          partyIdType: 'MSISDN',
+          partyId: phoneNumber,
+        },
+        payerMessage: 'Savings Plan Contribution',
+        payeeNote: 'Savings Plan Payment',
+      },
+      {
+        headers: {
+          'X-Reference-Id': planId,
+          'X-Target-Environment': 'sandbox', // Use 'production' for live
+          'Ocp-Apim-Subscription-Key': subscriptionKey,
+          'Authorization': `Bearer ${apiKey}`,
+        },
+      }
+    );
 
-// Check payment status
-const checkPaymentStatus = async (referenceId) => {
-    try {
-        const token = await getAccessToken();
-        
-        const response = await axios.get(`${baseUrl}/collection/v1_0/requesttopay/${referenceId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'X-Target-Environment': MOMO_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
-                'Ocp-Apim-Subscription-Key': MOMO_PRIMARY_KEY
-            }
-        });
-        
-        return response.data;
-    } catch (error) {
-        console.error('Error checking Momo payment status:', error.response?.data || error.message);
-        throw error;
-    }
-};
+    res.json({ message: 'Payment processed successfully', data: response.data });
+  } catch (error) {
+    console.error('Error processing payment:', error.response?.data || error.message);
+    res.status(500).json({ message: 'Failed to process payment' });
+  }
+});
 
-module.exports = {
-    requestPayment,
-    checkPaymentStatus
-};
+module.exports = router;
