@@ -7,7 +7,7 @@ const authRoutes = require('./routes/auth');
 const savingsRoutes = require('./routes/savings');
 const groupRoutes = require('./routes/group');
 const transactionRoutes = require('./routes/transaction');
-// const chatRoutes = require('./routes/chat');
+const chatRoutes = require('./routes/chat');
 
 dotenv.config();
 
@@ -27,7 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/savings', savingsRoutes);
 app.use('/api/groups', groupRoutes);
 app.use('/api/transactions', transactionRoutes);
-// app.use('/api/chat', chatRoutes);
+app.use('/api/chat', chatRoutes);
 
 const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
