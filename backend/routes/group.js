@@ -159,4 +159,26 @@ router.post('/:id/transactions', async (req, res) => {
   }
 });
 
+router.post('/:groupId/contribute', async (req, res) => {
+  const { amount } = req.body;
+
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+    return res.status(400).json({ message: 'Invalid contribution amount' });
+  }
+
+  try {
+    const group = await Group.findById(req.params.groupId);
+    if (!group) {
+      return res.status(404).json({ message: 'Group not found' });
+    }
+
+    group.currentAmount += parseFloat(amount); // Update the current amount
+    await group.save();
+
+    res.status(200).json({ message: 'Contribution successful', group });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

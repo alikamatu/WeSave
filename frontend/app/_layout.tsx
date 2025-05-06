@@ -7,6 +7,7 @@ import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
 import SavingsPlanDetail from './screens/SavingsPlanDetail';
 import GroupDetail from './screens/GroupDetail';
+import MakeContribution from './screens/MakeContribution';
 import GroupChat from './screens/GroupChat'
 import CreateGroup from './screens/CreateGroup';
 import CreateSavingsPlan from './screens/CreateSavingsPlan';
@@ -42,6 +43,7 @@ export default function App() {
           <Stack.Screen name="CreateGroup" component={CreateGroup} />
           <Stack.Screen name="GroupChat" component={GroupChat} />
           <Stack.Screen name="GroupDetail" component={GroupDetail} />
+          <Stack.Screen name="MakeContribution" component={MakeContribution} />
         </Stack.Navigator>
       </NavigationContainer>
     </AuthProvider>

@@ -23,6 +23,7 @@ const GroupChat = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const { user } = useContext(AuthContext);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   // Fetch chat messages for the group
   useEffect(() => {
@@ -44,13 +45,29 @@ const GroupChat = ({ route }) => {
     return () => clearInterval(interval);
   }, [groupId]);
 
+  useEffect(() => {
+    const fetchUserId = async () => {
+      try {
+        const storedUserId = await AsyncStorage.getItem('UserId');
+        setUserId(storedUserId);
+      } catch (error) {
+        console.error('Error fetching userId:', error);
+      }
+    };
+    fetchUserId();
+  }, []);
+
+  const handleChange = (name, value) => {
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
   // Send a new chat message
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     try {
       const response = await api.post(`/chat/${groupId}`, {
-        sender: user._id,
+        sender: userId,
         message: newMessage.trim(),
       });
 
@@ -88,7 +105,7 @@ const GroupChat = ({ route }) => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       {/* Header */}
-      <View style={tw`bg-blue-600 p-4 flex-row items-center shadow-md`}>
+      {/* <View style={tw`bg-blue-600 p-4 flex-row items-center shadow-md`}>
         <TouchableOpacity style={tw`mr-4`}>
           <Icon name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
@@ -98,7 +115,7 @@ const GroupChat = ({ route }) => {
             {messages.length > 0 ? `${messages.length} messages` : 'No messages yet'}
           </Text>
         </View>
-      </View>
+      </View> */}
 
       {/* Chat Messages */}
       <FlatList
@@ -107,7 +124,7 @@ const GroupChat = ({ route }) => {
         keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
           <View style={tw`px-4 py-2`}>
-            {item.sender._id !== user._id && (
+            {item.sender._id !== userId && (
               <Text style={tw`text-gray-500 text-xs ml-14 mb-1`}>
                 {item.sender.firstName} {item.sender.lastName}
               </Text>
@@ -115,18 +132,18 @@ const GroupChat = ({ route }) => {
             <View
               style={[
                 tw`p-3 rounded-2xl max-w-3/4`,
-                item.sender._id === user._id 
+                item.sender._id === userId 
                   ? [tw`bg-blue-500 self-end rounded-tr-none`, styles.sentMessage]
                   : [tw`bg-white self-start rounded-tl-none`, styles.receivedMessage],
               ]}
             >
-              <Text style={item.sender._id === user._id ? tw`text-white` : tw`text-gray-800`}>
+              <Text style={item.sender._id === userId ? tw`text-white` : tw`text-gray-800`}>
                 {item.message}
               </Text>
               <Text 
                 style={[
                   tw`text-xs mt-1 text-right`,
-                  item.sender._id === user._id ? tw`text-blue-200` : tw`text-gray-500`
+                  item.sender._id === userId ? tw`text-blue-200` : tw`text-gray-500`
                 ]}
               >
                 {new Date(item.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -180,8 +197,11 @@ const GroupChat = ({ route }) => {
             <Icon name="send" size={20} color="white" />
           </TouchableOpacity>
         ) : (
-          <TouchableOpacity style={tw`p-2`}>
-            <Icon name="attach-file" size={24} color="#9CA3AF" />
+            <TouchableOpacity
+            style={tw`bg-gray-200 p-3 rounded-full`}
+            disabled
+          >
+            <Icon name="send" size={20} color="white" />
           </TouchableOpacity>
         )}
       </View>

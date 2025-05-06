@@ -74,4 +74,17 @@ router.get('/me', async (req, res) => {
     }
 });
 
+// Get user details by ID
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('firstName lastName email'); // Select only necessary fields
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

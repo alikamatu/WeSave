@@ -36,6 +36,7 @@ const AuthProvider = ({ children }) => {
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data.user);
       await AsyncStorage.setItem('UserId', response.data.user.id);
+      await AsyncStorage.setItem('user', response.data.user);
       setIsAuthenticated(true);
       return { success: true };
     } catch (error) {
