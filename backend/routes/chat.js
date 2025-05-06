@@ -24,12 +24,6 @@ router.post('/:groupId', async (req, res) => {
   }
 
   try {
-    // Ensure the group exists
-    const group = await Group.findById(req.params.groupId);
-    if (!group) {
-      return res.status(404).json({ message: 'Group not found.' });
-    }
-
     const chatMessage = new ChatMessage({
       groupId: req.params.groupId,
       sender,
@@ -38,6 +32,20 @@ router.post('/:groupId', async (req, res) => {
 
     const savedMessage = await chatMessage.save();
     res.status(201).json(savedMessage);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.get('/:id', async (req, res) => {
+  try {
+    const group = await Group.findById(req.params.id)
+      .populate('admin', 'firstName lastName email') // Populate admin details
+      .populate('members', 'firstName lastName email'); // Populate member details
+
+    if (!group) return res.status(404).json({ message: 'Group not found' });
+
+    res.json(group);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

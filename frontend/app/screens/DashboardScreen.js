@@ -4,7 +4,7 @@ import tw from 'tailwind-react-native-classnames';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import SavingsPlanCard from '../../components/SavingsPlanCard';
-// import GroupCard from '../../components/GroupCard';
+import GroupCard from '../../components/GroupCard';
 
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);

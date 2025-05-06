@@ -8,7 +8,7 @@ const SavingsPlanCard = ({ plan, onPress }) => {
   
   return (
     <TouchableOpacity 
-      style={tw`bg-white rounded-lg p-4 mr-4 w-full shadow-sm m-2`}
+      style={tw`bg-white rounded-lg p-4 w-full shadow-sm m-2`}
       onPress={onPress}
     >
       <Text style={tw`font-bold text-lg mb-1`}>{plan.name}</Text>
