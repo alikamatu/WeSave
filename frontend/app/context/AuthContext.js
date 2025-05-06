@@ -9,25 +9,25 @@ const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  useEffect(() => {
-    checkAuthentication();
-  }, []);
+  // useEffect(() => {
+  //   checkAuthentication();
+  // }, []);
 
-  const checkAuthentication = async () => {
-    try {
-      const token = await AsyncStorage.getItem('token');
-      if (token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-        const response = await api.get('/auth/me');
-        setUser(response.data.user);
-        setIsAuthenticated(true);
-      }
-    } catch (error) {
-      console.log('Auth error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // const checkAuthentication = async () => {
+  //   try {
+  //     const token = await AsyncStorage.getItem('token');
+  //     if (token) {
+  //       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  //       const response = await api.get('/auth/me');
+  //       setUser(response.data.user);
+  //       setIsAuthenticated(true);
+  //     }
+  //   } catch (error) {
+  //     console.log('Auth error:', error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const login = async (email, password) => {
     try {
@@ -36,8 +36,7 @@ const AuthProvider = ({ children }) => {
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data.user);
       await AsyncStorage.setItem('UserId', response.data.user.id);
-      await AsyncStorage.setItem('user', response.data.user);
-      setIsAuthenticated(true);
+      await AsyncStorage.setItem('user', response.data.user.firstName);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Login failed' };
@@ -50,7 +49,6 @@ const AuthProvider = ({ children }) => {
       await AsyncStorage.setItem('token', response.data.token);
       api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
       setUser(response.data.user);
-      setIsAuthenticated(true);
       return { success: true };
     } catch (error) {
       return { success: false, message: error.response?.data?.message || 'Registration failed' };
@@ -63,7 +61,6 @@ const AuthProvider = ({ children }) => {
       await AsyncStorage.removeItem('UserId');
       delete api.defaults.headers.common['Authorization'];
       setUser(null);
-      setIsAuthenticated(false);
     } catch (error) {
       console.log('Logout error:', error);
     }
@@ -73,7 +70,6 @@ const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       isLoading,
-      isAuthenticated,
       login,
       register,
       logout

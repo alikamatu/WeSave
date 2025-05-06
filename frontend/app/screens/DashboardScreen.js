@@ -5,12 +5,26 @@ import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import SavingsPlanCard from '../../components/SavingsPlanCard';
 import GroupCard from '../../components/GroupCard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DashboardScreen = ({ navigation }) => {
   const { user } = useContext(AuthContext);
   const [savingsPlans, setSavingsPlans] = useState([]);
   const [groups, setGroups] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState(null);
+
+    useEffect(() => {
+      const fetchUserId = async () => {
+        try {
+          const storedUserId = await AsyncStorage.getItem('UserId');
+          setUserId(storedUserId);
+        } catch (error) {
+          console.error('Error fetching userId:', error);
+        }
+      };
+      fetchUserId();
+    }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,7 +115,7 @@ const DashboardScreen = ({ navigation }) => {
       data={[]}
       ListHeaderComponent={
         <>
-          <Text style={tw`text-xl font-bold mb-4`}>Welcome, {user?.firstName}!</Text>
+          <Text style={tw`text-xl font-bold mb-4`}>Welcome, {userId}!</Text>
           {renderSavingsPlans()}
           {renderGroups()}
         </>
