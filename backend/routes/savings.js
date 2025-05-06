@@ -77,4 +77,27 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+router.post('/:planId/contribute', async (req, res) => {
+  const { amount } = req.body;
+
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+    return res.status(400).json({ message: 'Invalid contribution amount' });
+  }
+
+  try {
+    const savingsPlan = await SavingsPlan.findById(req.params.planId);
+    if (!savingsPlan) {
+      return res.status(404).json({ message: 'Savings plan not found' });
+    }
+
+    // Update the current amount
+    savingsPlan.currentAmount += parseFloat(amount);
+    await savingsPlan.save();
+
+    res.status(200).json({ message: 'Contribution added successfully', savingsPlan });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

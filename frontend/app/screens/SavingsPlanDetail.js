@@ -8,7 +8,6 @@ const SavingsPlanDetail = ({ route }) => {
   const { planId } = route.params;
   const [planDetails, setPlanDetails] = useState(null);
   const [amount, setAmount] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,18 +27,26 @@ const SavingsPlanDetail = ({ route }) => {
   }, [planId]);
 
   const handlePayment = async () => {
-    if (!amount || !phoneNumber) {
-      Alert.alert('Error', 'Please enter both amount and phone number');
+    if (!amount) {
+      Alert.alert('Error', 'Please enter an amount');
       return;
     }
 
     try {
-      await api.post('/payments/mtn-momo', { planId, amount, phoneNumber });
-      Alert.alert('Success', 'Payment processed successfully');
+      // Send the contribution amount to the backend
+      await api.post(`/savings/${planId}/contribute`, { amount: parseFloat(amount) });
+
+      Alert.alert('Success', 'Contribution added successfully');
+
+      // Fetch the updated plan details
       const updatedPlan = await api.get(`/savings/${planId}`);
       setPlanDetails(updatedPlan.data);
+
+      // Clear the input field
+      setAmount('');
     } catch (error) {
-      Alert.alert('Error', error.response?.data?.message || 'Failed to process payment');
+      console.error('Error adding contribution:', error.response?.data || error.message);
+      Alert.alert('Error', error.response?.data?.message || 'Failed to add contribution');
     }
   };
 
@@ -80,19 +87,11 @@ const SavingsPlanDetail = ({ route }) => {
         keyboardType="numeric"
       />
 
-      <TextInput
-        style={tw`border border-gray-300 rounded-lg p-4 mb-4`}
-        placeholder="Enter Phone Number"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        keyboardType="phone-pad"
-      />
-
       <TouchableOpacity
         style={tw`bg-blue-600 py-4 rounded-lg`}
         onPress={handlePayment}
       >
-        <Text style={tw`text-white text-center font-bold`}>Make Payment</Text>
+        <Text style={tw`text-white text-center font-bold`}>Add Contribution</Text>
       </TouchableOpacity>
     </ScrollView>
   );
