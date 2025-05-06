@@ -10,7 +10,7 @@ import GroupDetail from './screens/GroupDetail';
 import GroupChat from './screens/GroupChat'
 import CreateGroup from './screens/CreateGroup';
 import CreateSavingsPlan from './screens/CreateSavingsPlan';
-import { AuthProvider } from './context/AuthContext';
+import AuthProvider  from './context/AuthContext';
 
 const Stack = createStackNavigator();
 
