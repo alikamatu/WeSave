@@ -54,7 +54,7 @@ const DashboardScreen = ({ navigation }) => {
   const renderHeader = () => (
     <View style={tw`flex-row justify-between items-center mb-6`}>
       <View>
-        <Text style={tw`text-1xl font-bold text-gray-800`}>Welcome, {user?.firstName}Queen!</Text>
+        <Text style={tw`text-1xl font-bold text-gray-800`}>Welcome, {user?.firstName}!</Text>
       </View>
       <TouchableOpacity 
         onPress={logout}
