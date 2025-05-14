@@ -4,7 +4,10 @@ import tw from 'tailwind-react-native-classnames';
 
 const GroupCard = ({ group, onPress }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={tw`bg-white w-full rounded-lg shadow p-4 mr-4`}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={tw`bg-white rounded-lg shadow p-4 m-2 flex-col justify-between`}
+    >
       <Text style={tw`text-lg font-bold mb-2`}>{group.name}</Text>
       <Text style={tw`text-gray-600 mb-1`}>Admin: {group.admin?.firstName || 'N/A'}</Text>
       <Text style={tw`text-gray-600 mb-1`}>Members: {group.members.length}</Text>

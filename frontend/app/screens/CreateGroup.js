@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,6 +7,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreateGroup = ({ navigation }) => {
   const { user } = useContext(AuthContext);
@@ -29,6 +30,20 @@ const CreateGroup = ({ navigation }) => {
     { label: 'Bi-Weekly', value: 'biweekly' },
     { label: 'Monthly', value: 'monthly' },
   ]);
+    const [userId, setUserId] = useState(null);
+  
+
+    useEffect(() => {
+      const fetchUserId = async () => {
+        try {
+          const storedUserId = await AsyncStorage.getItem('UserId');
+          setUserId(storedUserId);
+        } catch (error) {
+          console.error('Error fetching userId:', error);
+        }
+      };
+      fetchUserId();
+    }, []);
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -59,13 +74,13 @@ const CreateGroup = ({ navigation }) => {
       return;
     }
 
-    userId = user?.id || "131243242143123"; // Fallback for testing
+    userid = user?.id || "68188d8b8e9c8a9f54c1c536"; // Fallback for testing
 
     setIsSubmitting(true);
     try {
       const payload = {
         ...formData,
-        admin: userId, // Replace with user ID from context
+        admin: userId || userid, // Replace with user ID from context
         members: formData.members.split(',').map(id => id.trim()).filter(id => id),
         startDate: formatDate(formData.startDate),
         endDate: formatDate(formData.endDate),

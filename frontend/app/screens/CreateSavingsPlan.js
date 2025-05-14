@@ -17,7 +17,7 @@ const CreateSavingsPlan = ({ navigation }) => {
     startDate: new Date(),
     endDate: new Date(new Date().setMonth(new Date().getMonth() + 3)),
   });
-  const [userId, setUserId] = useState(null);
+  const [userid, setUserId] = useState(null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,26 +52,32 @@ const CreateSavingsPlan = ({ navigation }) => {
     if (field === 'endDate') setShowEndDatePicker(false);
   };
 
+    const userId = userid || "68188d8b8e9c8a9f54c1c536"; // Fallback for testing
+
   const handleCreatePlan = async () => {
+    console.log('Create Savings Plan button pressed');
     if (!userId) {
-      userId = "131243242143123"; // Fallback for testing
+
+      console.log('User ID not found');
       Alert.alert('Error', 'User ID not found. Please log in again.');
       return;
     }
-
+  
     const requiredFields = ['name', 'targetAmount', 'frequency', 'contributionAmount'];
     const missingField = requiredFields.find(field => !formData[field]);
-    
+  
     if (missingField) {
+      console.log(`Missing field: ${missingField}`);
       Alert.alert('Error', `Please fill in the ${missingField} field`);
       return;
     }
-
+  
     if (formData.startDate >= formData.endDate) {
+      console.log('Invalid date range');
       Alert.alert('Error', 'End date must be after start date');
       return;
     }
-
+  
     setIsSubmitting(true);
     try {
       const payload = {
@@ -80,7 +86,8 @@ const CreateSavingsPlan = ({ navigation }) => {
         startDate: formData.startDate.toISOString().split('T')[0],
         endDate: formData.endDate.toISOString().split('T')[0],
       };
-
+  
+      console.log('Payload:', payload);
       await api.post('/savings', payload);
       Alert.alert('Success', 'Savings plan created successfully');
       navigation.goBack();

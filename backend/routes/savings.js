@@ -6,9 +6,9 @@ const SavingsPlan = require('../models/SavingsPlan');
 router.post('/', async (req, res) => {
   const { userId, name, targetAmount, frequency, contributionAmount, withdrawalLimit, startDate, endDate } = req.body;
 
-  if (!userId || !name || !targetAmount || !frequency || !contributionAmount || !withdrawalLimit || !startDate || !endDate) {
-    return res.status(400).json({ message: 'All fields are required.' });
-  }
+  // if (!userId || !name || !targetAmount || !frequency || !contributionAmount || !withdrawalLimit || !startDate || !endDate) {
+  //   return res.status(400).json({ message: 'All fields are required.' });
+  // }
 
   const savingsPlan = new SavingsPlan({
     userId,

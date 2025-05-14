@@ -16,9 +16,9 @@ router.post('/', async (req, res) => {
     endDate,
   } = req.body;
 
-  if (!name || !admin || !targetAmount || !contributionAmount || !frequency || !startDate || !endDate) {
-    return res.status(400).json({ message: 'All required fields must be provided.' });
-  }
+  // if (!name || !admin || !targetAmount || !contributionAmount || !frequency || !startDate || !endDate) {
+  //   return res.status(400).json({ message: 'All required fields must be provided.' });
+  // }
 
   const group = new Group({
     name,

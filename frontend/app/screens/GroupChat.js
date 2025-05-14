@@ -61,13 +61,14 @@ const GroupChat = ({ route }) => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const Me = "68188d8b8e9c8a9f54c1c536"; // Fallback for testing
   // Send a new chat message
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     try {
       const response = await api.post(`/chat/${groupId}`, {
-        sender: userId,
+        sender: userId || Me,
         message: newMessage.trim(),
       });
 
