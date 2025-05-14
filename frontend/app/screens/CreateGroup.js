@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, StyleSheet 
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import tw from 'tailwind-react-native-classnames';
+import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
@@ -22,6 +23,12 @@ const CreateGroup = ({ navigation }) => {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+    const [openFrequencyPicker, setOpenFrequencyPicker] = useState(false);
+  const [frequencyItems, setFrequencyItems] = useState([
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Bi-Weekly', value: 'biweekly' },
+    { label: 'Monthly', value: 'monthly' },
+  ]);
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -52,11 +59,13 @@ const CreateGroup = ({ navigation }) => {
       return;
     }
 
+    userId = user?.id || "131243242143123"; // Fallback for testing
+
     setIsSubmitting(true);
     try {
       const payload = {
         ...formData,
-        admin: user._id,
+        admin: userId, // Replace with user ID from context
         members: formData.members.split(',').map(id => id.trim()).filter(id => id),
         startDate: formatDate(formData.startDate),
         endDate: formatDate(formData.endDate),
@@ -138,18 +147,17 @@ const CreateGroup = ({ navigation }) => {
 
       {/* Frequency */}
       <View style={tw`mb-4`}>
-        <Text style={tw`text-gray-700 font-medium mb-1`}>Contribution Frequency *</Text>
-        <View style={tw`bg-white border border-gray-200 rounded-lg overflow-hidden`}>
-          <Picker
-            selectedValue={formData.frequency}
-            onValueChange={(value) => handleChange('frequency', value)}
-            style={tw`text-gray-800`}
-          >
-            <Picker.Item label="Weekly" value="weekly" />
-            <Picker.Item label="Bi-Weekly" value="biweekly" />
-            <Picker.Item label="Monthly" value="monthly" />
-          </Picker>
-        </View>
+        <Text style={tw`text-gray-700 font-medium mb-1`}>Contribution Frequency</Text>
+        <DropDownPicker
+          open={openFrequencyPicker}
+          value={formData.frequency}
+          items={frequencyItems}
+          setOpen={setOpenFrequencyPicker}
+          setValue={(callback) => handleChange('frequency', callback(formData.frequency))}
+          setItems={setFrequencyItems}
+          style={tw`bg-white border border-gray-200 rounded-lg`}
+          dropDownContainerStyle={tw`bg-white border border-gray-200 rounded-lg`}
+        />
       </View>
 
       {/* Date Pickers */}

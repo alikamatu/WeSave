@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'tailwind-react-native-classnames';
@@ -21,6 +21,12 @@ const CreateSavingsPlan = ({ navigation }) => {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openFrequencyPicker, setOpenFrequencyPicker] = useState(false);
+  const [frequencyItems, setFrequencyItems] = useState([
+    { label: 'Weekly', value: 'weekly' },
+    { label: 'Bi-Weekly', value: 'biweekly' },
+    { label: 'Monthly', value: 'monthly' },
+  ]);
 
   // Fetch userId from AsyncStorage
   useEffect(() => {
@@ -48,6 +54,7 @@ const CreateSavingsPlan = ({ navigation }) => {
 
   const handleCreatePlan = async () => {
     if (!userId) {
+      userId = "131243242143123"; // Fallback for testing
       Alert.alert('Error', 'User ID not found. Please log in again.');
       return;
     }
@@ -127,17 +134,16 @@ const CreateSavingsPlan = ({ navigation }) => {
       {/* Frequency */}
       <View style={tw`mb-4`}>
         <Text style={tw`text-gray-700 font-medium mb-1`}>Contribution Frequency</Text>
-        <View style={tw`bg-white border border-gray-200 rounded-lg overflow-hidden`}>
-          <Picker
-            selectedValue={formData.frequency}
-            onValueChange={(value) => handleChange('frequency', value)}
-            style={tw`text-gray-800`}
-          >
-            <Picker.Item label="Weekly" value="weekly" />
-            <Picker.Item label="Bi-Weekly" value="biweekly" />
-            <Picker.Item label="Monthly" value="monthly" />
-          </Picker>
-        </View>
+        <DropDownPicker
+          open={openFrequencyPicker}
+          value={formData.frequency}
+          items={frequencyItems}
+          setOpen={setOpenFrequencyPicker}
+          setValue={(callback) => handleChange('frequency', callback(formData.frequency))}
+          setItems={setFrequencyItems}
+          style={tw`bg-white border border-gray-200 rounded-lg`}
+          dropDownContainerStyle={tw`bg-white border border-gray-200 rounded-lg`}
+        />
       </View>
 
       {/* Contribution Amount */}
